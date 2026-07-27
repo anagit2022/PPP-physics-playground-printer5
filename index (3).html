@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Physics Playground</title>
+    <script>
+        // apply saved theme before first paint, so there's no flash of default colors
+        (function(){
+            try{
+                var t = JSON.parse(localStorage.getItem("physicsPlaygroundTheme"));
+                if(t){
+                    document.documentElement.style.setProperty("--header-color", t.header);
+                    document.documentElement.style.setProperty("--accent-color", t.accent);
+                }
+            }catch(e){}
+        })();
+    </script>
+</head>
+<body>
+
+    <header class="topbar">
+        <span class="topbar-title">Physics playground</span>
+        <nav class="topnav">
+            <a href="gcode.html" class="nav-pill nav-pill-filled">Gcode</a>
+            <a href="index.html" class="nav-pill nav-pill-outline">Start here</a>
+            <a href="playground.html" class="nav-pill nav-pill-filled">Playground</a>
+        </nav>
+    </header>
+
+    <h1 class="page-heading">Explore physics simulations through making your own props</h1>
+
+    <div class="template-grid">
+
+        <!-- RESONANCE -->
+        <div class="template-card">
+            <h2>Resonance</h2>
+            <p class="template-desc">Discover the resonance of everyday objects</p>
+            <div class="template-art">
+                <img src="resonance.jpg" alt="Resonance experiment setup">
+            </div>
+            <a href="playground.html?template=resonance" class="template-play-btn">Play experiment</a>
+        </div>
+
+        <!-- PULLEY SYSTEM -->
+        <div class="template-card">
+            <h2>Pulley system</h2>
+            <p class="template-desc">Explore mechanical advantage with a lifting pulley</p>
+            <div class="template-art">
+                <img src="pulley.jpg" alt="Pulley system experiment setup">
+            </div>
+            <a href="playground.html?template=pulley" class="template-play-btn">Play experiment</a>
+        </div>
+
+        <!-- CREATE YOUR OWN -->
+        <div class="template-card template-card-blank">
+            <h2>Create your own experiment</h2>
+            <a href="playground.html" class="template-blank-plus" title="Start a blank experiment">+</a>
+        </div>
+
+    </div>
+
+    <script src="theme.js"></script>
+    <script src="landing.js?v=4"></script>
+</body>
+</html>

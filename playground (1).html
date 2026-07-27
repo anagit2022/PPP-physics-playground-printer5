@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Physics Playground</title>
+    <script>
+        // apply saved theme before first paint, so there's no flash of default colors
+        (function(){
+            try{
+                var t = JSON.parse(localStorage.getItem("physicsPlaygroundTheme"));
+                if(t){
+                    document.documentElement.style.setProperty("--header-color", t.header);
+                    document.documentElement.style.setProperty("--accent-color", t.accent);
+                }
+            }catch(e){}
+        })();
+    </script>
+</head>
+<body>
+
+    <header class="topbar">
+        <span class="topbar-title">Physics playground</span>
+        <nav class="topnav">
+            <a href="gcode.html" class="nav-pill nav-pill-filled">Gcode</a>
+            <a href="index.html" class="nav-pill nav-pill-filled">Start here</a>
+            <a href="playground.html" class="nav-pill nav-pill-outline">Playground</a>
+        </nav>
+    </header>
+
+    <div id="templateLabel" class="template-label"></div>
+
+    <div class="grid">
+
+        <!-- LEFT COLUMN -->
+        <div class="col left-col">
+
+            <div class="panel">
+                <h2 id="saveExperimentTitle">
+                    <span id="saveExperimentNameText">Name your experiment</span>
+                    <button type="button" id="editExperimentNameBtn" class="edit-name-btn" style="display:none;" title="Rename">&#9998;</button>
+                </h2>
+                <input type="text" id="experimentNameInput" class="case-input" placeholder="e.g. Bridge sway test">
+
+                <div class="thumbnail-row">
+                    <div class="thumbnail-preview" id="thumbnailPreview">No thumbnail</div>
+                    <div class="thumbnail-source-dropdown">
+                        <button type="button" id="thumbnailSourceBtn" class="fill-btn">Choose thumbnail &#9662;</button>
+                        <div class="thumbnail-source-menu" id="thumbnailSourceMenu">
+                            <button type="button" class="thumbnail-source-item" id="chooseFromRecordingBtn">From a recording</button>
+                            <button type="button" class="thumbnail-source-item" id="uploadImageBtn">Upload an image</button>
+                        </div>
+                    </div>
+                    <input type="file" id="thumbnailFileInput" accept="image/*" style="display:none;">
+                </div>
+
+                <button type="button" id="saveExperimentBtn" class="outline-btn" style="margin-top:12px;">Save experiment</button>
+                <div id="saveExperimentStatus" class="hint"></div>
+            </div>
+
+            <div class="thumbnail-modal" id="thumbnailModal">
+                <div class="thumbnail-modal-inner">
+                    <div class="thumbnail-modal-header">
+                        <h3>Pick a frame</h3>
+                        <button type="button" id="closeThumbnailModal" class="delete-btn">&times;</button>
+                    </div>
+                    <div class="hint">Scrub each video to the frame you want, then click "Use this frame".</div>
+                    <div id="thumbnailVideoList" class="thumbnail-video-list"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>Connect printer</h2>
+                <button id="connectButton" class="outline-btn">Connect</button>
+                <div id="connectStatus" class="status">Not connected</div>
+            </div>
+
+            <div class="panel">
+                <h2>Setup</h2>
+                <textarea id="setupInput" class="code-box" rows="2">G91</textarea>
+                <div class="hint">Sent once, before the experiment starts</div>
+            </div>
+
+            <div class="panel">
+                <h2>Safety limits</h2>
+                <div class="limits-row">
+                    <label>X max <input type="number" id="limitX" value="200"></label>
+                    <label>Y max <input type="number" id="limitY" value="200"></label>
+                    <label>Z max <input type="number" id="limitZ" value="200"></label>
+                </div>
+                <div class="hint">Tracked from 0 at the start of each run. If a move would go below 0 or past max on any axis, that axis recenters and the experiment stops. Add <code>G28</code> to Setup so the printer is actually homed to 0 first.</div>
+            </div>
+
+            <div class="panel">
+                <h2>Motion</h2>
+                <textarea id="motionInput" class="code-box" rows="4">G0 Y{Y} F{F}
+G0 Y-{Y} F{F}</textarea>
+                <div class="hint">Edit freely. Placeholders match whatever token each slider is set to (e.g. <code>{Y}</code>, <code>{F}</code>) — filled in live from the sliders every cycle. You can also offset a value, e.g. <code>{Y+10}</code> or <code>{F-500}</code>.</div>
+                <div id="motionPreview" class="code-box motion-preview"></div>
+                <div class="hint">Preview: what's actually sent right now</div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col right-col">
+
+            <div id="slidersContainer"></div>
+
+            <button id="addSliderButton" type="button" class="add-slider-btn">+ Add slider</button>
+
+            <div class="play-row">
+                <button id="playButton" class="play-btn">Play experiment</button>
+                <button id="stopButton" class="stop-btn">Stop</button>
+            </div>
+
+        </div>
+
+        <!-- OBSERVATION COLUMN -->
+        <div class="col obs-col">
+            <div class="obs-header">
+                <h2>Observation cards</h2>
+                <button id="addCardButton" class="add-card-btn" title="Add new card">+</button>
+            </div>
+            <div class="ai-settings">
+                <label for="geminiKey">Gemini API key</label>
+                <input type="password" id="geminiKey" placeholder="Paste your Gemini API key">
+                <div class="hint">Used by the Help button to draft insights. Stored only in this browser.</div>
+            </div>
+            <div id="cardsContainer"></div>
+        </div>
+
+    </div>
+
+    <div class="panel console-panel">
+        <h2>Command History</h2>
+        <div id="console"></div>
+    </div>
+
+    <script src="theme.js"></script>
+    <script src="serial.js"></script>
+    <script src="sketch.js?v=21"></script>
+    <script src="observation.js?v=15"></script>
+</body>
+</html>

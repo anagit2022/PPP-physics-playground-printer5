@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Physics Playground — Gcode</title>
+    <script>
+        // apply saved theme before first paint, so there's no flash of default colors
+        (function(){
+            try{
+                var t = JSON.parse(localStorage.getItem("physicsPlaygroundTheme"));
+                if(t){
+                    document.documentElement.style.setProperty("--header-color", t.header);
+                    document.documentElement.style.setProperty("--accent-color", t.accent);
+                }
+            }catch(e){}
+        })();
+    </script>
+</head>
+<body>
+
+    <header class="topbar">
+        <span class="topbar-title">Physics playground</span>
+        <nav class="topnav">
+            <a href="gcode.html" class="nav-pill nav-pill-outline">Gcode</a>
+            <a href="index.html" class="nav-pill nav-pill-filled">Start here</a>
+            <a href="playground.html" class="nav-pill nav-pill-filled">Playground</a>
+        </nav>
+    </header>
+
+    <div class="grid">
+
+        <!-- LEFT COLUMN -->
+        <div class="col left-col">
+
+            <div class="panel">
+                <h2>Connect printer</h2>
+                <button id="connectButton" class="outline-btn">Connect</button>
+                <div id="connectStatus" class="status">Not connected</div>
+            </div>
+
+            <div class="panel">
+                <h2>Setup</h2>
+                <textarea id="setupInput" class="code-box" rows="2">G91</textarea>
+                <div class="hint">Sent once, using the button below</div>
+                <button type="button" id="sendSetupBtn" class="outline-btn" style="margin-top:10px;">Send setup</button>
+            </div>
+
+            <div class="panel">
+                <h2>Quick command</h2>
+                <textarea id="quickCommandInput" class="code-box" rows="3" placeholder="G0 X10 F1000"></textarea>
+                <div class="hint">One command per line. Sent in order, each one waiting for the printer's "ok".</div>
+                <div class="repeat-row">
+                    <label>Repeat <input type="number" id="repeatCountInput" value="1" min="1"></label>
+                    <button type="button" id="sendQuickCommandBtn" class="outline-btn">Send</button>
+                    <button type="button" id="stopQuickCommandBtn" class="outline-btn">Stop</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- JOG COLUMNS -->
+        <div class="col jog-col">
+            <div class="panel jog-panel">
+                <div class="jog-step-row">
+                    <label>Step <input type="number" id="stepX" value="1" min="0" step="0.1"></label>
+                </div>
+                <button type="button" class="jog-btn jog-plus" data-axis="X" data-dir="1">+</button>
+                <div class="jog-letter">X</div>
+                <button type="button" class="jog-btn jog-minus" data-axis="X" data-dir="-1">&minus;</button>
+            </div>
+        </div>
+
+        <div class="col jog-col">
+            <div class="panel jog-panel">
+                <div class="jog-step-row">
+                    <label>Step <input type="number" id="stepY" value="1" min="0" step="0.1"></label>
+                </div>
+                <button type="button" class="jog-btn jog-plus" data-axis="Y" data-dir="1">+</button>
+                <div class="jog-letter">Y</div>
+                <button type="button" class="jog-btn jog-minus" data-axis="Y" data-dir="-1">&minus;</button>
+            </div>
+        </div>
+
+        <div class="col jog-col">
+            <div class="panel jog-panel">
+                <div class="jog-step-row">
+                    <label>Step <input type="number" id="stepZ" value="1" min="0" step="0.1"></label>
+                </div>
+                <button type="button" class="jog-btn jog-plus" data-axis="Z" data-dir="1">+</button>
+                <div class="jog-letter">Z</div>
+                <button type="button" class="jog-btn jog-minus" data-axis="Z" data-dir="-1">&minus;</button>
+            </div>
+        </div>
+
+        <!-- COMMAND HISTORY -->
+        <div class="col history-col">
+            <div class="panel history-panel">
+                <h2>Command history</h2>
+                <div id="console"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="theme.js"></script>
+    <script src="serial.js"></script>
+    <script src="gcode.js"></script>
+</body>
+</html>
