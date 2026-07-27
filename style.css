@@ -142,9 +142,9 @@ body {
 }
 
 .page-heading {
-    color: #3ba9e0;
-    font-size: 32px;
-    font-weight: 700;
+    color: #000;
+    font-size: 28px;
+    font-weight: 600;
     padding: 40px 40px 10px 40px;
     margin: 0;
 }
