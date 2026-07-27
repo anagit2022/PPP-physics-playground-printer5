@@ -13,9 +13,11 @@ document.querySelectorAll(".jog-btn").forEach(btn => {
         const axis = btn.dataset.axis;
         const dir = Number(btn.dataset.dir);
         const stepInput = document.getElementById("step" + axis);
+        const feedInput = document.getElementById("feed" + axis);
         const step = Number(stepInput.value) || 0;
+        const feed = Number(feedInput.value) || 1000;
         const distance = (step * dir).toFixed(3).replace(/\.?0+$/, "");
-        await sendGcode(`G0 ${axis}${distance}`);
+        await sendGcode(`G0 ${axis}${distance} F${feed}`);
     });
 });
 
