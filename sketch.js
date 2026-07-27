@@ -4,8 +4,8 @@
 // DriveUpload.gs. This file is sent to the browser as plain text, so
 // anyone who opens dev tools can read these values — fine for a
 // personal tool, just don't publish this page anywhere public.
-const DRIVE_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE"; // e.g. https://script.google.com/macros/s/AKfycb.../exec
-const DRIVE_SECRET = "changeme123"; // must match SECRET in DriveUpload.gs
+const DRIVE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-4WJW8WXULsdhsVTnNBNvFRStbWgQM9aXvKiPYxM-jd9IaFyFVOimU-XSuYIcYQzb/exec"; 
+const DRIVE_SECRET = "PPP"; // must match SECRET in DriveUpload.gs
 
 let stopProgram = false;
 
