@@ -70,7 +70,7 @@ function createObservationCard(){
                             <button type="button" class="help-menu-item" data-mode="graphical">Graphical insight</button>
                             <button type="button" class="help-menu-item" data-mode="theoretical">Theoretical insight</button>
                             <button type="button" class="help-menu-item" data-mode="formula">Generalized formula</button>
-                            <button type="button" class="help-menu-item" data-mode="simple">Explain like I'm 5</button>
+                            <button type="button" class="help-menu-item" data-mode="simple">Simple</button>
                         </div>
                     </div>
                 </div>
