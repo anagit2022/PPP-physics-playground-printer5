@@ -60,61 +60,50 @@
                 </div>
             </div>
 
-            <div class="panel">
-                <h2>Axis links</h2>
-                <div class="hint">Link any two axes so a jog press moves both at once, sent as one combined line (e.g. <code>G0 X2 Z2</code>).</div>
-                <div class="axis-link-list">
-                    <button type="button" class="axis-link-chip" data-pair="X-Y">
-                        <span class="link-dot"></span><span class="link-line"></span><span class="link-dot"></span>
-                        <span class="axis-link-label">X &harr; Y</span>
-                    </button>
-                    <button type="button" class="axis-link-chip" data-pair="Y-Z">
-                        <span class="link-dot"></span><span class="link-line"></span><span class="link-dot"></span>
-                        <span class="axis-link-label">Y &harr; Z</span>
-                    </button>
-                    <button type="button" class="axis-link-chip" data-pair="X-Z">
-                        <span class="link-dot"></span><span class="link-line"></span><span class="link-dot"></span>
-                        <span class="axis-link-label">X &harr; Z</span>
-                    </button>
+        </div>
+
+        <!-- JOG COLUMNS: drag between the dots above each panel to link axes,
+             click an existing curve to unlink -->
+        <div class="jog-area" id="jogArea">
+            <svg class="jog-links-svg" id="jogLinksSvg"></svg>
+
+            <div class="col jog-col">
+                <div class="panel jog-panel">
+                    <div class="jog-node" data-axis="X" title="Drag to link"></div>
+                    <div class="jog-step-row">
+                        <label>Step <input type="number" id="stepX" value="1" min="0" step="0.1"></label>
+                        <label>Feed <input type="number" id="feedX" value="1000" min="1" step="100"></label>
+                    </div>
+                    <button type="button" class="jog-btn jog-plus" data-axis="X" data-dir="1">+</button>
+                    <div class="jog-letter">X</div>
+                    <button type="button" class="jog-btn jog-minus" data-axis="X" data-dir="-1">&minus;</button>
                 </div>
             </div>
 
-        </div>
-
-        <!-- JOG COLUMNS -->
-        <div class="col jog-col">
-            <div class="panel jog-panel">
-                <div class="jog-step-row">
-                    <label>Step <input type="number" id="stepX" value="1" min="0" step="0.1"></label>
-                    <label>Feed <input type="number" id="feedX" value="1000" min="1" step="100"></label>
+            <div class="col jog-col">
+                <div class="panel jog-panel">
+                    <div class="jog-node" data-axis="Y" title="Drag to link"></div>
+                    <div class="jog-step-row">
+                        <label>Step <input type="number" id="stepY" value="1" min="0" step="0.1"></label>
+                        <label>Feed <input type="number" id="feedY" value="1000" min="1" step="100"></label>
+                    </div>
+                    <button type="button" class="jog-btn jog-plus" data-axis="Y" data-dir="1">+</button>
+                    <div class="jog-letter">Y</div>
+                    <button type="button" class="jog-btn jog-minus" data-axis="Y" data-dir="-1">&minus;</button>
                 </div>
-                <button type="button" class="jog-btn jog-plus" data-axis="X" data-dir="1">+</button>
-                <div class="jog-letter">X</div>
-                <button type="button" class="jog-btn jog-minus" data-axis="X" data-dir="-1">&minus;</button>
             </div>
-        </div>
 
-        <div class="col jog-col">
-            <div class="panel jog-panel">
-                <div class="jog-step-row">
-                    <label>Step <input type="number" id="stepY" value="1" min="0" step="0.1"></label>
-                    <label>Feed <input type="number" id="feedY" value="1000" min="1" step="100"></label>
+            <div class="col jog-col">
+                <div class="panel jog-panel">
+                    <div class="jog-node" data-axis="Z" title="Drag to link"></div>
+                    <div class="jog-step-row">
+                        <label>Step <input type="number" id="stepZ" value="1" min="0" step="0.1"></label>
+                        <label>Feed <input type="number" id="feedZ" value="1000" min="1" step="100"></label>
+                    </div>
+                    <button type="button" class="jog-btn jog-plus" data-axis="Z" data-dir="1">+</button>
+                    <div class="jog-letter">Z</div>
+                    <button type="button" class="jog-btn jog-minus" data-axis="Z" data-dir="-1">&minus;</button>
                 </div>
-                <button type="button" class="jog-btn jog-plus" data-axis="Y" data-dir="1">+</button>
-                <div class="jog-letter">Y</div>
-                <button type="button" class="jog-btn jog-minus" data-axis="Y" data-dir="-1">&minus;</button>
-            </div>
-        </div>
-
-        <div class="col jog-col">
-            <div class="panel jog-panel">
-                <div class="jog-step-row">
-                    <label>Step <input type="number" id="stepZ" value="1" min="0" step="0.1"></label>
-                    <label>Feed <input type="number" id="feedZ" value="1000" min="1" step="100"></label>
-                </div>
-                <button type="button" class="jog-btn jog-plus" data-axis="Z" data-dir="1">+</button>
-                <div class="jog-letter">Z</div>
-                <button type="button" class="jog-btn jog-minus" data-axis="Z" data-dir="-1">&minus;</button>
             </div>
         </div>
 
