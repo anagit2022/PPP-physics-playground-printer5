@@ -889,18 +889,32 @@ body {
     height: 460px;
 }
 
-.axis-link-btn {
-    align-self: center;
-    margin-top: 240px;
-    width: 44px;
-    height: 44px;
-    background: none;
-    border: none;
-    cursor: pointer;
+.axis-link-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.axis-link-chip {
     display: flex;
     align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.axis-link-chip:hover {
+    background: #f5f5f5;
+}
+
+.axis-link-label {
+    font-size: 15px;
+    font-weight: 600;
 }
 
 .link-dot {
@@ -916,26 +930,24 @@ body {
     width: 20px;
     height: 2px;
     background: #ccc;
+    flex-shrink: 0;
 }
 
-.axis-link-btn:hover .link-dot,
-.axis-link-btn:hover .link-line {
-    background: #999;
-    border-color: #999;
+.axis-link-chip.linked {
+    border-color: var(--accent-color);
 }
 
-.axis-link-btn.linked .link-dot {
+.axis-link-chip.linked .link-dot {
     background: var(--accent-color);
     border-color: var(--accent-color);
 }
 
-.axis-link-btn.linked .link-line {
+.axis-link-chip.linked .link-line {
     background: var(--accent-color);
 }
 
-.axis-link-btn.linked:hover .link-dot,
-.axis-link-btn.linked:hover .link-line {
-    filter: brightness(0.85);
+.axis-link-chip.linked .axis-link-label {
+    color: var(--accent-color);
 }
 
 /* ---------------- Observation cards ---------------- */
