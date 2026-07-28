@@ -7,15 +7,15 @@ document.getElementById("sendSetupBtn").addEventListener("click", async () => {
     }
 });
 
-// ---- axis linking: e.g. link X and Y so a jog press moves both at once,
-// sending a single combined line like "G0 X2 Y2 F1000" ----
-const linkedPairs = { "X-Y": false, "Y-Z": false };
+// ---- axis linking: link any two axes so a jog press moves both at once,
+// sending a single combined line like "G0 X2 Z2 F1000" ----
+const linkedPairs = { "X-Y": false, "Y-Z": false, "X-Z": false };
 
-document.querySelectorAll(".axis-link-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const pair = btn.dataset.pair;
+document.querySelectorAll(".axis-link-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+        const pair = chip.dataset.pair;
         linkedPairs[pair] = !linkedPairs[pair];
-        btn.classList.toggle("linked", linkedPairs[pair]);
+        chip.classList.toggle("linked", linkedPairs[pair]);
         logLine(linkedPairs[pair] ? `Linked ${pair.replace("-", " + ")}` : `Unlinked ${pair.replace("-", " + ")}`);
     });
 });
