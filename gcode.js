@@ -7,17 +7,49 @@ document.getElementById("sendSetupBtn").addEventListener("click", async () => {
     }
 });
 
+// ---- axis linking: e.g. link X and Y so a jog press moves both at once,
+// sending a single combined line like "G0 X2 Y2 F1000" ----
+const linkedPairs = { "X-Y": false, "Y-Z": false };
+
+document.querySelectorAll(".axis-link-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const pair = btn.dataset.pair;
+        linkedPairs[pair] = !linkedPairs[pair];
+        btn.classList.toggle("linked", linkedPairs[pair]);
+        logLine(linkedPairs[pair] ? `Linked ${pair.replace("-", " + ")}` : `Unlinked ${pair.replace("-", " + ")}`);
+    });
+});
+
+// returns the axis letter(s) directly linked to this one
+function getLinkedNeighbors(axis){
+    const neighbors = [];
+    Object.keys(linkedPairs).forEach(pair => {
+        if(!linkedPairs[pair]) return;
+        const [a, b] = pair.split("-");
+        if(a === axis) neighbors.push(b);
+        if(b === axis) neighbors.push(a);
+    });
+    return neighbors;
+}
+
+function axisMoveToken(axis, dir){
+    const step = Number(document.getElementById("step" + axis).value) || 0;
+    const distance = (step * dir).toFixed(3).replace(/\.?0+$/, "");
+    return `${axis}${distance}`;
+}
+
 // ---- Jog buttons (+/- on each axis) ----
 document.querySelectorAll(".jog-btn").forEach(btn => {
     btn.addEventListener("click", async () => {
         const axis = btn.dataset.axis;
         const dir = Number(btn.dataset.dir);
-        const stepInput = document.getElementById("step" + axis);
         const feedInput = document.getElementById("feed" + axis);
-        const step = Number(stepInput.value) || 0;
         const feed = Number(feedInput.value) || 1000;
-        const distance = (step * dir).toFixed(3).replace(/\.?0+$/, "");
-        await sendGcode(`G0 ${axis}${distance} F${feed}`);
+
+        const tokens = [axisMoveToken(axis, dir)];
+        getLinkedNeighbors(axis).forEach(n => tokens.push(axisMoveToken(n, dir)));
+
+        await sendGcode(`G0 ${tokens.join(" ")} F${feed}`);
     });
 });
 
