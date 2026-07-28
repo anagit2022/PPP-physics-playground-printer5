@@ -142,9 +142,9 @@ body {
 }
 
 .page-heading {
-    color: #000;
-    font-size: 28px;
-    font-weight: 600;
+    color: #3ba9e0;
+    font-size: 32px;
+    font-weight: 700;
     padding: 40px 40px 10px 40px;
     margin: 0;
 }
@@ -887,6 +887,55 @@ body {
 
 .history-panel #console {
     height: 460px;
+}
+
+.axis-link-btn {
+    align-self: center;
+    margin-top: 240px;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.link-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ccc;
+    border: 2px solid #ccc;
+    flex-shrink: 0;
+}
+
+.link-line {
+    width: 20px;
+    height: 2px;
+    background: #ccc;
+}
+
+.axis-link-btn:hover .link-dot,
+.axis-link-btn:hover .link-line {
+    background: #999;
+    border-color: #999;
+}
+
+.axis-link-btn.linked .link-dot {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.axis-link-btn.linked .link-line {
+    background: var(--accent-color);
+}
+
+.axis-link-btn.linked:hover .link-dot,
+.axis-link-btn.linked:hover .link-line {
+    filter: brightness(0.85);
 }
 
 /* ---------------- Observation cards ---------------- */
