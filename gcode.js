@@ -7,18 +7,18 @@ document.getElementById("sendSetupBtn").addEventListener("click", async () => {
     }
 });
 
-// ---- axis linking: link any two axes so a jog press moves both at once,
-// sending a single combined line like "G0 X2 Z2 F1000" ----
+// ---- axis linking: drag between the dots above each panel to link two
+// axes, so a jog press moves both at once as one combined line like
+// "G0 X2 Z2 F1000". Click an existing curve to unlink. ----
 const linkedPairs = { "X-Y": false, "Y-Z": false, "X-Z": false };
 
-document.querySelectorAll(".axis-link-chip").forEach(chip => {
-    chip.addEventListener("click", () => {
-        const pair = chip.dataset.pair;
-        linkedPairs[pair] = !linkedPairs[pair];
-        chip.classList.toggle("linked", linkedPairs[pair]);
-        logLine(linkedPairs[pair] ? `Linked ${pair.replace("-", " + ")}` : `Unlinked ${pair.replace("-", " + ")}`);
-    });
-});
+const jogArea = document.getElementById("jogArea");
+const jogLinksSvg = document.getElementById("jogLinksSvg");
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function pairKey(a, b){
+    return [a, b].sort().join("-");
+}
 
 // returns the axis letter(s) directly linked to this one
 function getLinkedNeighbors(axis){
@@ -31,6 +31,88 @@ function getLinkedNeighbors(axis){
     });
     return neighbors;
 }
+
+function nodeCenter(axis){
+    const node = document.querySelector(`.jog-node[data-axis="${axis}"]`);
+    const nodeRect = node.getBoundingClientRect();
+    const areaRect = jogArea.getBoundingClientRect();
+    return {
+        x: nodeRect.left + nodeRect.width / 2 - areaRect.left,
+        y: nodeRect.top + nodeRect.height / 2 - areaRect.top
+    };
+}
+
+function areaPoint(clientX, clientY){
+    const areaRect = jogArea.getBoundingClientRect();
+    return { x: clientX - areaRect.left, y: clientY - areaRect.top };
+}
+
+function curvePathD(p1, p2){
+    const midX = (p1.x + p2.x) / 2;
+    const lift = Math.min(p1.y, p2.y) - 30;
+    return `M ${p1.x} ${p1.y} Q ${midX} ${lift} ${p2.x} ${p2.y}`;
+}
+
+function redrawLinks(){
+    jogLinksSvg.querySelectorAll(".jog-link-path").forEach(p => p.remove());
+
+    Object.keys(linkedPairs).forEach(key => {
+        if(!linkedPairs[key]) return;
+        const [a, b] = key.split("-");
+        const path = document.createElementNS(SVG_NS, "path");
+        path.setAttribute("class", "jog-link-path");
+        path.setAttribute("d", curvePathD(nodeCenter(a), nodeCenter(b)));
+        path.addEventListener("click", () => {
+            linkedPairs[key] = false;
+            logLine(`Unlinked ${key.replace("-", " + ")}`);
+            redrawLinks();
+        });
+        jogLinksSvg.appendChild(path);
+    });
+
+    document.querySelectorAll(".jog-node").forEach(node => {
+        node.classList.toggle("linked", getLinkedNeighbors(node.dataset.axis).length > 0);
+    });
+}
+
+// ---- drag from one node to another to create a link ----
+document.querySelectorAll(".jog-node").forEach(node => {
+    node.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        const fromAxis = node.dataset.axis;
+
+        const tempPath = document.createElementNS(SVG_NS, "path");
+        tempPath.setAttribute("class", "jog-link-temp");
+        jogLinksSvg.appendChild(tempPath);
+
+        function onMove(ev){
+            tempPath.setAttribute("d", curvePathD(nodeCenter(fromAxis), areaPoint(ev.clientX, ev.clientY)));
+        }
+
+        function onUp(ev){
+            document.removeEventListener("mousemove", onMove);
+            document.removeEventListener("mouseup", onUp);
+            tempPath.remove();
+
+            const target = document.elementFromPoint(ev.clientX, ev.clientY);
+            const targetNode = target && target.closest(".jog-node");
+            if(targetNode && targetNode.dataset.axis !== fromAxis){
+                const key = pairKey(fromAxis, targetNode.dataset.axis);
+                if(!linkedPairs[key]){
+                    linkedPairs[key] = true;
+                    logLine(`Linked ${key.replace("-", " + ")}`);
+                    redrawLinks();
+                }
+            }
+        }
+
+        document.addEventListener("mousemove", onMove);
+        document.addEventListener("mouseup", onUp);
+    });
+});
+
+window.addEventListener("resize", redrawLinks);
+redrawLinks();
 
 function axisMoveToken(axis, dir){
     const step = Number(document.getElementById("step" + axis).value) || 0;
