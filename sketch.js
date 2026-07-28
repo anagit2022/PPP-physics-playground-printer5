@@ -5,7 +5,7 @@
 // anyone who opens dev tools can read these values — fine for a
 // personal tool, just don't publish this page anywhere public.
 const DRIVE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx-4WJW8WXULsdhsVTnNBNvFRStbWgQM9aXvKiPYxM-jd9IaFyFVOimU-XSuYIcYQzb/exec"; 
-const DRIVE_SECRET = "PPP"; // must match SECRET in DriveUpload.gs
+const DRIVE_SECRET = "PPP";
 
 let stopProgram = false;
 
@@ -157,17 +157,30 @@ function bindSliderPanel(panel, def){
         def.hint = hintInput.value;
     });
 
-    function setValue(v){
+    function setValue(v, opts = {}){
         v = Math.min(def.max, Math.max(def.min, v));
         def.value = v;
-        valueInput.value = v;
         range.value = v;
+        if(opts.updateInput !== false) valueInput.value = v;
         updateMotionPreview();
     }
 
+    // update live as the user types, but don't rewrite the box itself —
+    // that would clamp "" to 0 and fight anything they're mid-typing
     valueInput.addEventListener("input", () => {
+        const raw = valueInput.value.trim();
+        if(raw === "" || raw === "-") return; // let them keep typing/clearing
+        const v = Number(raw);
+        if(!isNaN(v)) setValue(v, { updateInput: false });
+    });
+
+    // once they're done, clamp and normalize what's actually shown
+    valueInput.addEventListener("blur", () => {
         const v = Number(valueInput.value);
-        if(!isNaN(v)) setValue(v);
+        setValue(isNaN(v) ? def.value : v);
+    });
+    valueInput.addEventListener("keydown", (e) => {
+        if(e.key === "Enter") valueInput.blur();
     });
 
     range.addEventListener("input", () => {
