@@ -130,32 +130,11 @@ async function doJogMove(axis, dir){
     await sendGcode(`G0 ${tokens.join(" ")} F${feed}`);
 }
 
-// ---- Jog buttons (+/- on each axis): press and hold to keep moving ----
+// ---- Jog buttons (+/- on each axis): one press = one step ----
 document.querySelectorAll(".jog-btn").forEach(btn => {
-    let holding = false;
-
-    async function startHold(){
-        if(holding) return; // already looping from an earlier press
-        holding = true;
-        const axis = btn.dataset.axis;
-        const dir = Number(btn.dataset.dir);
-        // each iteration waits for the printer's "ok" (inside sendGcode),
-        // so this can't outrun what the printer can actually execute
-        while(holding){
-            await doJogMove(axis, dir);
-        }
-    }
-
-    function stopHold(){
-        holding = false;
-    }
-
-    btn.addEventListener("mousedown", (e) => { e.preventDefault(); startHold(); });
-    btn.addEventListener("mouseup", stopHold);
-    btn.addEventListener("mouseleave", stopHold);
-    btn.addEventListener("touchstart", (e) => { e.preventDefault(); startHold(); }, { passive: false });
-    btn.addEventListener("touchend", stopHold);
-    btn.addEventListener("touchcancel", stopHold);
+    btn.addEventListener("click", () => {
+        doJogMove(btn.dataset.axis, Number(btn.dataset.dir));
+    });
 });
 
 // ---- Quick command: send one or more lines, optionally repeated ----
